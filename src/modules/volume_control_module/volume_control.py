@@ -1,5 +1,6 @@
 # run correctly
 import asyncio
+from typing import Any
 import comtypes
 from comtypes import cast, POINTER, windll
 from comtypes import CLSCTX_ALL
@@ -9,7 +10,9 @@ if __name__ == "__main__":
     import sys
     import os
     # 獲取父目錄的絕對路徑
-    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../'*3)))
+    sys.path.append(os.path.abspath(
+        os.path.join(os.path.dirname(__file__), '../'*3)))
+
 
 class VolumeControl():
     def __init__(self):
@@ -23,8 +26,9 @@ class VolumeControl():
         self._devices = AudioUtilities.GetSpeakers()
 
         # Activate the interface to control audio volume
-        self._interface = self._devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
-        self._volume = cast(self._interface, POINTER(IAudioEndpointVolume))
+        self._interface = self._devices.Activate(
+            IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+        self._volume: Any = cast(self._interface, POINTER(IAudioEndpointVolume))
 
     @property
     def minimum_volume_limit(self):
@@ -54,17 +58,20 @@ class VolumeControl():
                 # Check if the current volume exceeds the minimum limit
                 if self.current_volume < self._minimum_volume_limit:
                     # If it does, set the volume to the minimum limit
-                    self._volume.SetMasterVolumeLevelScalar(self._minimum_volume_limit, None)
+                    self._volume.SetMasterVolumeLevelScalar(
+                        self._minimum_volume_limit, None)
                     # print("Mini limit start: " + str(self._minimum_volume_limit))
 
                 # Check if the current volume exceeds the maximum limit
                 if self.current_volume > self._maximum_volume_limit:
                     # If it does, set the volume to the maximum limit
-                    self._volume.SetMasterVolumeLevelScalar(self._maximum_volume_limit, None)
+                    self._volume.SetMasterVolumeLevelScalar(
+                        self._maximum_volume_limit, None)
                     # print("Max limit start: " + str(self._maximum_volume_limit))
 
             # Wait for a period (1 second) before checking again
             await asyncio.sleep(1)  # Adjust volume every second
+
 
 if __name__ == "__main__":
     volume_control_loop = asyncio.new_event_loop()
