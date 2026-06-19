@@ -5,8 +5,8 @@ if __name__ == "__main__":
     import sys,os
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../')))
 
-from src.modules.base_service import BaseService
-from src.modules.volume_control_module.volume_control import VolumeControl
+from modules.base_service import BaseService
+from modules.volume_control_module.volume_control import VolumeControl
 
 class VolumeControlService(BaseService):
     def __init__(self):

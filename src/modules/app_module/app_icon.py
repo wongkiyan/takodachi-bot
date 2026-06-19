@@ -4,7 +4,7 @@ from PIL import Image
 import os
 import configs
 
-from src.modules.archive_module.service import (
+from modules.archive_module.service import (
     archive_and_play_twitch_stream,
     archive_twitch_stream,
     archive_video,

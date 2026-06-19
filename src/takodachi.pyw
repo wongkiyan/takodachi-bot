@@ -6,7 +6,7 @@ from logging.config import fileConfig
 
 import configs
 
-from src.modules import ServicesManager
+from modules import ServicesManager
 
 class App():
     def __init__(self):

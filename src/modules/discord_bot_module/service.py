@@ -6,8 +6,8 @@ if __name__ == "__main__":
         os.path.dirname(__file__), '../../..')))
 
 import configs
-from src.modules.base_service import BaseService
-from src.modules.discord_bot_module.discord_bot import DiscordBot
+from modules.base_service import BaseService
+from modules.discord_bot_module.discord_bot import DiscordBot
 
 class DiscordBotService(BaseService):
     def __init__(self):

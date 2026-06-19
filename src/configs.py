@@ -1,12 +1,15 @@
 # Load configuration parameters
+import os
 import os, sys
 from dotenv import load_dotenv
 from urllib.parse import quote_plus
 
-base_path = os.path.dirname(__file__)
+src_dir = os.path.dirname(os.path.abspath(__file__))
+
+project_root = os.path.abspath(os.path.join(src_dir, ".."))
 
 # env setup
-env_file_path = os.path.join(base_path, '.env')
+env_file_path = os.path.join(project_root, '.env')
 if getattr(sys, 'frozen', False):
     env_file_path = os.path.join(os.path.dirname(sys.executable), '.env')
 load_dotenv(dotenv_path=env_file_path)
@@ -14,13 +17,12 @@ load_dotenv(dotenv_path=env_file_path)
 # App setting
 APP_NAME = "Takodachi"
 APP_TITLE = "Wah!"
-APP_ICON_PATH = os.path.join(base_path, './assets/icon_logo.png')
+APP_ICON_PATH = os.path.join(project_root, "assets", "icon_logo.png")
 
-FOLDER_PARENT_PATCH = os.path.join(base_path, '../')
 APP_PROCESS_NAME = "takodachi.pyw"
-APP_STATUS_BAT_PATCH = os.path.join(FOLDER_PARENT_PATCH,"TakodachiBot_Status.bat")
+APP_STATUS_BAT_PATCH = os.path.join(project_root, "scripts", "takodachi-bot-status.bat")
 if getattr(sys, 'frozen', False):
-    APP_STATUS_BAT_PATCH = os.path.join(os.path.dirname(sys.executable), 'TakodachiBot_Status.bat')
+    APP_STATUS_BAT_PATCH = os.path.join(os.path.dirname(sys.executable), "takodachi-bot-status.bat")
 
 # Service setting
 SERVICE_APP_ICON = 'app_icon'
@@ -41,8 +43,8 @@ DATABASE_MARIADB_URL = f"mariadb+pymysql://{DATABASE_MARIADB_USER}:{quote_plus(s
 
 # Logger setting
 LOG_DIRECTORY = 'logs'
-LOGGER_CONFIGS_PATH = os.path.join(base_path, 'src', 'library', 'logger.conf')
-LOGGER_CONFIGS_EXE_PATH = os.path.join(base_path, 'src', 'library', 'logger_exe.conf')
+LOGGER_CONFIGS_PATH = os.path.join(src_dir, 'library', 'logger.conf')
+LOGGER_CONFIGS_EXE_PATH = os.path.join(src_dir, 'library', 'logger_exe.conf')
 
 # API setting
 API_YOUTUBE_KEY = os.getenv("YOUTUBE_API_KEY")

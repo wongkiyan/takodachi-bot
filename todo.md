@@ -12,3 +12,6 @@
 
 - [ ] Hololive schedule module
 - [ ] Window control
+
+# Debug
+- [ ] The logs file is not release yet after the program exit.

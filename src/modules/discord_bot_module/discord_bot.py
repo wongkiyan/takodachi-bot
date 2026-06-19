@@ -8,7 +8,7 @@ if __name__ == "__main__":
     sys.path.append(os.path.abspath(os.path.join(
         os.path.dirname(__file__), '../../..')))
 
-from src.modules.discord_bot_module import cogs
+from modules.discord_bot_module import cogs
 import configs
 
 class DiscordBot(commands.Bot):

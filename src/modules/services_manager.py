@@ -8,9 +8,9 @@ from configs import (
     SERVICE_APP_ICON as APP_ICON_KEY
 )
 
-from src.modules import DiscordBotService
-from src.modules import VolumeControlService
-from src.modules import AppIconService
+from modules import DiscordBotService
+from modules import VolumeControlService
+from modules import AppIconService
 
 log = logging.getLogger('exception')
 
