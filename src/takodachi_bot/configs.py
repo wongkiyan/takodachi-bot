@@ -8,11 +8,12 @@ root_dir = os.path.dirname(os.path.dirname(src_dir))
 
 exe_dir = root_dir
 bundle_root = root_dir
-logger_base_dir = src_dir
+logger_base_dir = os.path.join(src_dir, 'library')
+
 if getattr(sys, 'frozen', False):
     exe_dir = os.path.dirname(sys.executable)
     bundle_root = getattr(sys, '_MEIPASS', root_dir)
-    logger_base_dir = bundle_root
+    logger_base_dir = exe_dir
 
 load_dotenv(dotenv_path=os.path.join(exe_dir, '.env'))
 
@@ -41,8 +42,7 @@ DATABASE_MARIADB_URL = f"mariadb+pymysql://{DATABASE_MARIADB_USER}:{quote_plus(s
 
 # Logger setting
 LOG_DIRECTORY = os.path.join(exe_dir, 'logs')
-LOGGER_CONFIGS_PATH = os.path.join(logger_base_dir, 'library', 'logger.conf')
-LOGGER_CONFIGS_EXE_PATH = os.path.join(logger_base_dir, 'library', 'logger_exe.conf')
+LOGGER_CONFIGS_PATH = os.path.join(logger_base_dir, 'logger.conf')
 
 # API setting
 API_YOUTUBE_KEY = os.getenv("YOUTUBE_API_KEY")

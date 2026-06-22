@@ -5,11 +5,8 @@ a = Analysis(
     ['src\\takodachi_bot\\takodachi.py'],
     pathex=[],
     binaries=[],
-    datas=[
-        ('assets/icon_logo.png', 'assets'),
-        ('src/takodachi_bot/library/logger_exe.conf', 'library')
-    ],
-    hiddenimports=['comtypes', 'pycaw', 'pystray._win32', 'psutil'],
+    datas=[('assets/icon_logo.png', 'assets')],
+    hiddenimports=['comtypes', 'pycaw', 'pystray._win32', 'psutil', 'colorlog'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],

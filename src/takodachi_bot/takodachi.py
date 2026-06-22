@@ -106,43 +106,31 @@ class App():
 
 
     def init_logger(self):
-        # 1. 確保實體的 logs 資料夾存在於安全目錄
+        # 1. 確保實體的 logs 資料夾存在
         os.makedirs(configs.LOG_DIRECTORY, exist_ok=True)
 
-        # 2. 精準根據「是否為打包環境」選擇設定檔
-        if getattr(sys, 'frozen', False):
-                logger_path = configs.LOGGER_CONFIGS_EXE_PATH
-        else:
-            logger_path = configs.LOGGER_CONFIGS_PATH
+        # 2. 註冊自訂 Handler 到 logging 模組，防範 .exe 環境解不出來
+        from takodachi_bot.library.dynamic_file_handler import DynamicFileHandler
+        setattr(logging, 'DynamicFileHandler', DynamicFileHandler)
 
-        # 3. 載入日誌設定結構 (因為加了 True，此時絕對不會在硬碟上產生任何空檔案！)
-        fileConfig(logger_path, disable_existing_loggers=False,
-                encoding="utf-8")
+        # 3. 直接載入唯一的融合版 logger.conf
+        fileConfig(configs.LOGGER_CONFIGS_PATH, disable_existing_loggers=False, encoding="utf-8")
 
-        # 4. 🔥 核心轉移：在 Handler 還沒真正寫入任何東西前，強行把它的家搬到 LOG_DIRECTORY
+        # 4. 絕對路徑導航保險：當有人把 conf 切換成 rotating 模式時，幫內建類別強制校正家目錄
         root_logger = logging.getLogger()
-        all_loggers = [root_logger] + [
-            logging.getLogger(name) for name in logging.Logger.manager.loggerDict
-        ]
+        all_loggers = [root_logger] + [logging.getLogger(name) for name in logging.Logger.manager.loggerDict]
 
         for logger in all_loggers:
             if not hasattr(logger, 'handlers'):
                 continue
-
             for handler in logger.handlers:
-                if isinstance(handler, logging.FileHandler):
-                    # 抓取原先的純檔名 (app.log, archive.log, remote_pc.log)
+                if isinstance(handler, logging.handlers.RotatingFileHandler):
                     base_filename = os.path.basename(handler.baseFilename)
-
-                    # 計算出絕對安全的絕對路徑 (C:\...\logs\app.log)
                     target_path = os.path.abspath(os.path.join(
                         configs.LOG_DIRECTORY, base_filename))
-
                     if handler.baseFilename != target_path:
-                        handler.close()  # 關閉原來的相對路徑指針
+                        handler.close()
                         handler.baseFilename = target_path
-                        # 注意：這裡不需要手動呼叫 handler._open()，
-                        # 因為延遲開檔 (delay=True) 會在程式第一次呼叫 logger.info() 時自動優雅地觸發 _open()！
 
     def run(self):
         self.services_manager.start_default_service()
