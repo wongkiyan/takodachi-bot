@@ -106,43 +106,43 @@ class App():
 
 
     def init_logger(self):
-        # 1. 確保實體的 logs 資料夾存在於安全目錄 (configs.py 算出的 exe_dir)
+        # 1. 確保實體的 logs 資料夾存在於安全目錄
         os.makedirs(configs.LOG_DIRECTORY, exist_ok=True)
 
         # 2. 精準根據「是否為打包環境」選擇設定檔
         if getattr(sys, 'frozen', False):
-            logger_path = configs.LOGGER_CONFIGS_EXE_PATH
+                logger_path = configs.LOGGER_CONFIGS_EXE_PATH
         else:
             logger_path = configs.LOGGER_CONFIGS_PATH
 
-        # 3. 載入日誌設定結構
+        # 3. 載入日誌設定結構 (因為加了 True，此時絕對不會在硬碟上產生任何空檔案！)
         fileConfig(logger_path, disable_existing_loggers=False,
                 encoding="utf-8")
 
-        # 4. 🔥 動態注入絕對路徑，防止 RotatingFileHandler 在 EXE 環境下亂跑
-        # 對應你在 logger_exe.conf 中設定的 handler 名稱與想要的實際檔名
-        loggers_mapping = {
-            'fileHandler': 'app.log',
-            'archiveFileHandler': 'archive.log',
-            'remotePCFileHandler': 'remote_pc.log'
-        }
-
-        # 取得所有已登記的 loggers
-        all_loggers = [logging.getLogger(), logging.getLogger(
-            'archive'), logging.getLogger('remotePC')]
+        # 4. 🔥 核心轉移：在 Handler 還沒真正寫入任何東西前，強行把它的家搬到 LOG_DIRECTORY
+        root_logger = logging.getLogger()
+        all_loggers = [root_logger] + [
+            logging.getLogger(name) for name in logging.Logger.manager.loggerDict
+        ]
 
         for logger in all_loggers:
-            for handler in logger.handlers:
-                # 同時支援內建的 RotatingFileHandler 與你的 DynamicFileHandler
-                if isinstance(handler, (logging.handlers.RotatingFileHandler, logging.FileHandler)):
-                    handler_name = handler.name
-                    if handler_name in loggers_mapping:
-                        handler.close()  # 關閉預設開啟的相對路徑檔案
+            if not hasattr(logger, 'handlers'):
+                continue
 
-                        # 計算出絕對安全的絕對路徑 (例如: C:\...\takodachi-bot\logs\app.log)
-                        target_path = os.path.join(
-                            configs.LOG_DIRECTORY, loggers_mapping[handler_name])
-                        handler.baseFilename = os.path.abspath(target_path)
+            for handler in logger.handlers:
+                if isinstance(handler, logging.FileHandler):
+                    # 抓取原先的純檔名 (app.log, archive.log, remote_pc.log)
+                    base_filename = os.path.basename(handler.baseFilename)
+
+                    # 計算出絕對安全的絕對路徑 (C:\...\logs\app.log)
+                    target_path = os.path.abspath(os.path.join(
+                        configs.LOG_DIRECTORY, base_filename))
+
+                    if handler.baseFilename != target_path:
+                        handler.close()  # 關閉原來的相對路徑指針
+                        handler.baseFilename = target_path
+                        # 注意：這裡不需要手動呼叫 handler._open()，
+                        # 因為延遲開檔 (delay=True) 會在程式第一次呼叫 logger.info() 時自動優雅地觸發 _open()！
 
     def run(self):
         self.services_manager.start_default_service()
