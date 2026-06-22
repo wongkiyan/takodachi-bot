@@ -10,11 +10,13 @@
                 "pyinstaller",
                 "src/takodachi_bot/takodachi.py",
                 "--onefile",
-                "--noconsole",
+                "--console",
+                "--add-data", "assets/icon_logo.png:assets",
                 "--hidden-import", "comtypes",
                 "--hidden-import", "pycaw",
                 "--hidden-import", "pystray._win32",
                 "--hidden-import", "psutil",
+                "--hidden-import", "colorlog"
             ],
             "group": "build",
             "presentation": {
@@ -29,8 +31,7 @@
             "command": "uv",
             "args": [
                 "run",
-                "pyinstaller",
-                "takodachi.spec"
+                "build.py"
             ],
             "group": {
                 "kind": "build",
@@ -48,12 +49,15 @@
             "command": "uv",
             "args": [
                 "run",
-                "pyinstaller",
-                "takodachi.spec",
+                "build.py",
                 "--clean"
             ],
             "group": "build",
-            "presentation": { "reveal": "always", "panel": "shared" }
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
         }
     ]
 }
