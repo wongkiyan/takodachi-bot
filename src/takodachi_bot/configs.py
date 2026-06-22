@@ -19,7 +19,7 @@ load_dotenv(dotenv_path=os.path.join(exe_dir, '.env'))
 # App setting
 APP_NAME = "Takodachi"
 APP_TITLE = "Wah!"
-APP_ICON_PATH = os.path.join(bundle_root, "assets", "icon_logo.png")
+APP_ICON_PATH = os.path.abspath(os.path.join(bundle_root, "assets", "icon_logo.png"))
 APP_PROCESS_NAME = "takodachi.py"
 
 # Service setting

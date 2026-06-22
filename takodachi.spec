@@ -5,8 +5,11 @@ a = Analysis(
     ['src\\takodachi_bot\\takodachi.py'],
     pathex=[],
     binaries=[],
-    datas=[],
-    hiddenimports=['comtypes', 'pycaw', 'pystray._win32'],
+    datas=[
+        ('assets/icon_logo.png', 'assets'),
+        ('src/takodachi_bot/library/logger_exe.conf', 'library')
+    ],
+    hiddenimports=['comtypes', 'pycaw', 'pystray._win32', 'psutil'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -29,7 +32,7 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=False,
+    console=True,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,

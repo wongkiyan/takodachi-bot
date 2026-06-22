@@ -17,3 +17,4 @@
 
 # Debug
 - [X] The program is not release yet after the program exit.
+- [] Two takodachi.exe in exe version when run.

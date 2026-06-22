@@ -13,7 +13,8 @@
                 "--noconsole",
                 "--hidden-import", "comtypes",
                 "--hidden-import", "pycaw",
-                "--hidden-import", "pystray._win32"
+                "--hidden-import", "pystray._win32",
+                "--hidden-import", "psutil",
             ],
             "group": "build",
             "presentation": {
@@ -40,6 +41,19 @@
                 "panel": "shared"
             },
             "problemMatcher": []
+        },
+        {
+            "label": "PyInstaller: 清除快取全新重編 (環境/Spec變更時使用)",
+            "type": "shell",
+            "command": "uv",
+            "args": [
+                "run",
+                "pyinstaller",
+                "takodachi.spec",
+                "--clean"
+            ],
+            "group": "build",
+            "presentation": { "reveal": "always", "panel": "shared" }
         }
     ]
 }
